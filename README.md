@@ -48,3 +48,6 @@ Register.js		// Компонент регистрации пользовател
 
 **3. Диаграмма**
 
+https://drive.google.com/file/d/1faMlBtPtIwvSDeRFZi3w8GiLes3zrakU/view?usp=sharing
+
+
