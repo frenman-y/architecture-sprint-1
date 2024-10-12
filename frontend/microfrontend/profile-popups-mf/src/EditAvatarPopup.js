@@ -1,13 +1,24 @@
 import React from 'react';
-import PopupWithForm from './PopupWithForm';
+import PopupWithForm from 'popup/PopupWithForm';
+import api from 'apiPackage/api';
 
-function EditAvatarPopup({ isOpen, onUpdateAvatar, onClose }) {
+function EditAvatarPopup({ isOpen, setCurrentUser, onClose }) {
   const inputRef = React.useRef();
+
+  function handleUpdateAvatar(avatarUpdate) {
+    api
+        .setUserAvatar(avatarUpdate)
+        .then((newUserData) => {
+          setCurrentUser(newUserData);
+          onClose();
+        })
+        .catch((err) => console.log(err));
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    onUpdateAvatar({
+    handleUpdateAvatar({
       avatar: inputRef.current.value,
     });
   }

@@ -1,8 +1,9 @@
 import React from 'react';
-import PopupWithForm from './PopupWithForm';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import PopupWithForm from 'popup/PopupWithForm';
+import { CurrentUserContext } from 'contextsPackage/CurrentUserContext';
+import api from 'apiPackage/api';
 
-function EditProfilePopup({ isOpen, onUpdateUser, onClose }) {
+function EditProfilePopup({ isOpen, setCurrentUser, onClose }) {
   const [name, setName] = React.useState('');
   const [description, setDescription] = React.useState('');
 
@@ -23,10 +24,20 @@ function EditProfilePopup({ isOpen, onUpdateUser, onClose }) {
     }
   }, [currentUser]);
 
+  function handleUpdateUser(userUpdate) {
+    api
+        .setUserInfo(userUpdate)
+        .then((newUserData) => {
+          setCurrentUser(newUserData);
+          onClose();
+        })
+        .catch((err) => console.log(err));
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
 
-    onUpdateUser({
+    handleUpdateUser({
       name,
       about: description,
     });

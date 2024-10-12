@@ -1,9 +1,20 @@
 import React from 'react';
-import PopupWithForm from './PopupWithForm';
+import PopupWithForm from 'popupMf/PopupWithForm';
+import api from 'apiPackage/api';
 
-function AddPlacePopup({ isOpen, onAddPlace, onClose }) {
+function AddPlacePopup({ isOpen, setCards, cards, onClose }) {
   const [name, setName] = React.useState('');
   const [link, setLink] = React.useState('');
+
+  function handleAddPlaceSubmit(newCard) {
+    api
+        .addCard(newCard)
+        .then((newCardFull) => {
+          setCards([newCardFull, ...cards]);
+          onClose();
+        })
+        .catch((err) => console.log(err));
+  }
 
   function handleNameChange(e) {
     setName(e.target.value);
@@ -16,7 +27,7 @@ function AddPlacePopup({ isOpen, onAddPlace, onClose }) {
   function handleSubmit(e) {
     e.preventDefault();
 
-    onAddPlace({
+    handleAddPlaceSubmit({
       name,
       link
     });

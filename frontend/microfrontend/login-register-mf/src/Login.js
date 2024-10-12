@@ -1,10 +1,26 @@
 import React from 'react';
 
-import '../blocks/login/login.css';
+import auth from "authPackage/auth";
 
-function Login ({ onLogin }){
+function Login ({ setIsLoggedIn, setEmail: setEmailExternal, setTooltipStatus, setIsInfoToolTipOpen }){
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+
+  function onLogin({ email, password }) {
+    auth
+        .login(email, password)
+        .then((res) => {
+          setIsLoggedIn(true);
+          setEmailExternal(email);
+          // eslint-disable-next-line no-restricted-globals
+          history.push("/");
+        })
+        .catch((err) => {
+          setTooltipStatus("fail");
+          setIsInfoToolTipOpen(true);
+        });
+  }
+
 
   function handleSubmit(e){
     e.preventDefault();

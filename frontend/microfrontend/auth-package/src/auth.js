@@ -41,3 +41,9 @@ export const checkToken = (token) => {
   })
   .then(getResponse)
 }
+
+const auth = {
+  register, login, checkToken
+}
+
+export default auth;

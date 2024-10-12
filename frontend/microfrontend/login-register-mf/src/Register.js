@@ -1,9 +1,26 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function Register ({ onRegister }){
+import auth from "authPackage/auth";
+
+function Register ({ setTooltipStatus, setIsInfoToolTipOpen }){
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+
+  function onRegister({ email, password }) {
+    auth
+        .register(email, password)
+        .then((res) => {
+          setTooltipStatus("success");
+          setIsInfoToolTipOpen(true);
+          // eslint-disable-next-line no-restricted-globals
+          history.push("/signin");
+        })
+        .catch((err) => {
+          setTooltipStatus("fail");
+          setIsInfoToolTipOpen(true);
+        });
+  }
 
   function handleSubmit(e){
     e.preventDefault();
