@@ -52,3 +52,4 @@ Register.js		// Компонент регистрации пользовател
 https://drive.google.com/file/d/1faMlBtPtIwvSDeRFZi3w8GiLes3zrakU/view?usp=sharing
 
 
+PR
