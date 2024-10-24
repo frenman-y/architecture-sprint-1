@@ -97,4 +97,4 @@
 ```
 
 # Задание 2
-
+https://drive.google.com/file/d/1Xiqz6-TGHSciFTfgl31BHFo_WEhUbqjq/view?usp=sharing
