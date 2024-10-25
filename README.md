@@ -66,4 +66,4 @@ Cтуктура микрофронтента popap
 
 <h2>Архитектура микросервиса</h2> <br>
 
-https://drive.google.com/file/d/13BV8dzms9aaWcvjukNzde4QYi00gpCk8/view?usp=sharing
+[https://drive.google.com/file/d/13BV8dzms9aaWcvjukNzde4QYi00gpCk8/view?usp=sharing](https://drive.google.com/file/d/1p_iDE5GNglZIgph-omMHuqSiz0MhikDp/view?usp=sharing)
