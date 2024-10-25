@@ -3,6 +3,8 @@ import 'dotenv/config';
 import { errors } from 'celebrate';
 import cookieParser from 'cookie-parser';
 import express from 'express';
+import { Request } from 'express';
+import cors from 'cors';
 import mongoose from 'mongoose';
 
 import { DB_ADDRESS } from './config';
@@ -13,6 +15,7 @@ const { PORT = 3000 } = process.env;
 const app = express();
 mongoose.connect(DB_ADDRESS);
 
+app.use(cors<Request>());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
