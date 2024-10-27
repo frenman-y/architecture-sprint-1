@@ -97,3 +97,8 @@
     - index.js – Точка входа микрофронтенда
   - package.json – Зависимости и скрипты микрофронтенда
   - webpack.config.js - Конфиг для сборки с помощью webpack
+
+## Второе задание
+
+Ссылка на обновленную архитектуру монолитного приложения из второго задания
+https://drive.google.com/file/d/1zDF5HaQn2r_zp4H4IP60x7d06eW1QvIk/view?usp=sharing
