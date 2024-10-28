@@ -1,0 +1,62 @@
+@startuml
+actor "Клиент" as Client
+participant "Портал площадки" as Frontend
+participant "API Gateway" as Gateway
+participant "BFF для портала" as BFF
+participant "Сервис пользователей" as UserService
+participant "Севрис торговых площадок и товаров" as ProductService
+participant "Сервис заказов" as OrderService
+participant "Платёжный сервис" as PaymentService
+participant "Внешняя платёжная система" as ExternalPaymentSystem
+participant "Сервис уведомлений" as NotificationService
+participant "Шина событий" as EventBus
+participant "Vertica" as DWH
+
+Client -> Frontend: Open Portal
+Frontend -> Gateway: Authenticate Client
+Gateway -> UserService: Verify Credentials
+UserService -> Gateway: Authentication Response
+Gateway -> Frontend: Authentication Success
+
+Client -> Frontend: Search for Product
+Frontend -> Gateway: Request Product List
+Gateway -> BFF: Request Product List
+BFF -> ProductService: Fetch Products from Marketplaces
+ProductService -> BFF: Return Products
+BFF -> Gateway: Forward Product List
+Gateway -> Frontend: Display Products
+
+Client -> Frontend: Place Order
+Frontend -> Gateway: Create Order
+Gateway -> BFF: Create Order Request
+BFF -> OrderService: Validate Order & Create
+OrderService -> ProductService: Reserve Product
+ProductService -> OrderService: Product Reserved
+OrderService -> BFF: Order Created
+BFF -> Gateway: Order Confirmation
+Gateway -> Frontend: Show Order Confirmation
+
+Client -> Frontend: Proceed to Payment
+Frontend -> Gateway: Initiate Payment
+Gateway -> BFF: Payment Request
+BFF -> PaymentService: Process Payment
+
+PaymentService -> ExternalPaymentSystem: Execute Payment
+ExternalPaymentSystem -> PaymentService: Payment Confirmation
+
+PaymentService -> BFF: Payment Successful
+BFF -> Gateway: Payment Status
+Gateway -> Frontend: Show Payment Confirmation
+
+OrderService -> EventBus: Publish "Order Created"
+EventBus -> NotificationService: Order Created Event
+NotificationService -> Client: Notify "Order Created"
+
+PaymentService -> EventBus: Publish "Order Paid"
+EventBus -> NotificationService: Order Paid Event
+NotificationService -> Client: Notify "Order Paid"
+
+OrderService -> DWH: Log Order Data
+PaymentService -> DWH: Log Payment Data
+
+@enduml

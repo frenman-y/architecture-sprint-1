@@ -182,3 +182,9 @@ $ npm run start # 3005 port
 $ cd main
 $ npm run start # 3000 port
 ```
+
+## Задание 2
+
+См. [./task2](./task2)
+
+draw.io diagram – https://drive.google.com/file/d/1jYXtm3Q6eyCl1L4ptQ_8icRrmPVvCTBR/view?usp=sharing
