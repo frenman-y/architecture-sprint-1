@@ -47,4 +47,4 @@ __Module Federation__ позволяет каждому микрофронтен
 Не до конца понимаю, как быть с компонентами, которые используют .popup. Есть вариант вынести в отдельный микрофронтенд (например shared-mf) компонент Popup и взаимодействовать с ним где нужно. 
 
 ## Задание 2
-[Ссылка на диаграмму](https://drive.google.com/file/d/14sxEyMlA3ZBnlI5RU6yiN4KkghXxcQH8/view?usp=sharing)
+[Ссылка на диаграмму](https://drive.google.com/file/d/1GC_BNEG4sWx_b_wIPvNU6Anvon5hrcj_/view?usp=sharing)
