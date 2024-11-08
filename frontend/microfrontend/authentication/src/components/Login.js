@@ -12,7 +12,7 @@ function Login() {
     auth
       .login(email, password)
       .then((res) => {
-        dispatchEvent(
+        window.dispatchEvent(
           new CustomEvent("is-sign-in", {
             detail: {
               status: true,
@@ -22,7 +22,7 @@ function Login() {
         );
       })
       .catch((err) => {
-        dispatchEvent(
+        window.dispatchEvent(
           new CustomEvent("is-sign-in", {
             detail: {
               status: false,
@@ -37,8 +37,8 @@ function Login() {
   };
 
   React.useEffect(() => {
-    addEventListener("is-sign-out", handleIsSignOut);
-    //return () => window.removeEventListener("is-sign-out", handleIsSignOut);
+    window.addEventListener("is-sign-out", handleIsSignOut);
+    // return () => window.removeEventListener("is-sign-out", handleIsSignOut);
   }, []);
 
   // при монтировании App описан эффект, проверяющий наличие токена и его валидности
@@ -48,7 +48,7 @@ function Login() {
       auth
         .checkToken(token)
         .then((res) => {
-          dispatchEvent(
+          window.dispatchEvent(
             new CustomEvent("is-sign-in", {
               detail: {
                 status: true,

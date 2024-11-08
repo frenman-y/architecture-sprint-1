@@ -14,14 +14,14 @@ function Register() {
     auth
       .register(email, password)
       .then((res) => {
-        dispatchEvent(
+        window.dispatchEvent(
           new CustomEvent("is-logged", {
             detail: true,
           })
         );
       })
       .catch((err) => {
-        dispatchEvent(
+        window.dispatchEvent(
           new CustomEvent("is-logged", {
             detail: false,
           })
