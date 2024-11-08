@@ -20,7 +20,6 @@
         nil
         statix
         deadnix
-        clang-tools
 
         # nodejs
         nodejs

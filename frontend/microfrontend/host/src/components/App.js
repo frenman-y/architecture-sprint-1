@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense, useState, useEffect } from "react";
 import { Route, useHistory, Switch } from "react-router-dom";
 import Header from "./Header";
 import Main from "./Main";
@@ -10,24 +10,26 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
-import Register from "./Register";
-import Login from "./Login";
 import InfoTooltip from "./InfoTooltip";
 import ProtectedRoute from "./ProtectedRoute";
-import * as auth from "../utils/auth.js";
+
+const Register = lazy(() =>
+  import("authentication/Register").catch(() => {
+    return {
+      default: () => <div className="error">Component is not available!</div>,
+    };
+  })
+);
+
+const Login = lazy(() =>
+  import("authentication/Login").catch(() => {
+    return {
+      default: () => <div className="error">Component is not available!</div>,
+    };
+  })
+);
 
 function App() {
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
-    React.useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
-    React.useState(false);
-  const [selectedCard, setSelectedCard] = React.useState(null);
-  const [cards, setCards] = React.useState([]);
-
-  // В корневом компоненте App создана стейт-переменная currentUser. Она используется в качестве значения для провайдера контекста.
-  const [currentUser, setCurrentUser] = React.useState({});
-
   const [isInfoToolTipOpen, setIsInfoToolTipOpen] = React.useState(false);
   const [tooltipStatus, setTooltipStatus] = React.useState("");
 
@@ -35,7 +37,81 @@ function App() {
   //В компоненты добавлены новые стейт-переменные: email — в компонент App
   const [email, setEmail] = React.useState("");
 
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
+    React.useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
+    React.useState(false);
+
+  const [selectedCard, setSelectedCard] = React.useState(null);
+  const [cards, setCards] = React.useState([]);
+
+  // В корневом компоненте App создана стейт-переменная currentUser. Она используется в качестве значения для провайдера контекста.
+  const [currentUser, setCurrentUser] = React.useState({});
+
   const history = useHistory();
+
+  const handleHistoryPush = (event) => {
+    history.push(event.detail);
+  };
+
+  const handleOpenToolTipWithStatus = (event) => {
+    setTooltipStatus(event.detail);
+    setIsInfoToolTipOpen(true);
+  };
+
+  const handleIsLogged = (event) => {
+    if (event.detail) {
+      history.push("/signin");
+      setTooltipStatus("success");
+      setIsInfoToolTipOpen(true);
+    } else {
+      setTooltipStatus("fail");
+      setIsInfoToolTipOpen(true);
+    }
+  };
+
+  const handleIsSignIn = (event) => {
+    if (event.detail.status) {
+      setEmail(event.detail.email);
+      setIsLoggedIn(true);
+      history.push("/");
+    } else {
+      setTooltipStatus("fail");
+      setIsInfoToolTipOpen(true);
+    }
+  };
+
+  const handleIsSignOut = (event) => {
+    setEmail("");
+    setIsLoggedIn(false);
+    history.push("/signin");
+  };
+
+  React.useEffect(() => {
+    addEventListener("is-logged", handleIsLogged);
+    return () => removeEventListener("is-logged", handleIsLogged);
+  }, []);
+
+  React.useEffect(() => {
+    addEventListener("is-sign-in", handleIsSignIn);
+    return () => removeEventListener("is-sign-in", handleIsSignIn);
+  }, []);
+
+  React.useEffect(() => {
+    addEventListener("is-sign-out", handleIsSignOut);
+    return () => removeEventListener("is-sign-out", handleIsSignOut);
+  }, []);
+
+  function onSignOut() {
+    dispatchEvent(
+      new CustomEvent("is-sign-out", {
+        detail: "",
+      })
+    );
+  }
+
+  // old --------------
 
   // Запрос к API за информацией о пользователе и массиве карточек выполняется единожды, при монтировании.
   React.useEffect(() => {
@@ -47,24 +123,6 @@ function App() {
       })
       .catch((err) => console.log(err));
   }, []);
-
-  // при монтировании App описан эффект, проверяющий наличие токена и его валидности
-  React.useEffect(() => {
-    const token = localStorage.getItem("jwt");
-    if (token) {
-      auth
-        .checkToken(token)
-        .then((res) => {
-          setEmail(res.data.email);
-          setIsLoggedIn(true);
-          history.push("/");
-        })
-        .catch((err) => {
-          localStorage.removeItem("jwt");
-          console.log(err);
-        });
-    }
-  }, [history]);
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
@@ -141,42 +199,6 @@ function App() {
       .catch((err) => console.log(err));
   }
 
-  function onRegister({ email, password }) {
-    auth
-      .register(email, password)
-      .then((res) => {
-        setTooltipStatus("success");
-        setIsInfoToolTipOpen(true);
-        history.push("/signin");
-      })
-      .catch((err) => {
-        setTooltipStatus("fail");
-        setIsInfoToolTipOpen(true);
-      });
-  }
-
-  function onLogin({ email, password }) {
-    auth
-      .login(email, password)
-      .then((res) => {
-        setIsLoggedIn(true);
-        setEmail(email);
-        history.push("/");
-      })
-      .catch((err) => {
-        setTooltipStatus("fail");
-        setIsInfoToolTipOpen(true);
-      });
-  }
-
-  function onSignOut() {
-    // при вызове обработчика onSignOut происходит удаление jwt
-    localStorage.removeItem("jwt");
-    setIsLoggedIn(false);
-    // После успешного вызова обработчика onSignOut происходит редирект на /signin
-    history.push("/signin");
-  }
-
   return (
     // В компонент App внедрён контекст через CurrentUserContext.Provider
     <CurrentUserContext.Provider value={currentUser}>
@@ -197,10 +219,14 @@ function App() {
             loggedIn={isLoggedIn}
           />
           <Route path="/signup">
-            <Register onRegister={onRegister} />
+            <Suspense>
+              <Register />
+            </Suspense>
           </Route>
           <Route path="/signin">
-            <Login onLogin={onLogin} />
+            <Suspense>
+              <Login />
+            </Suspense>
           </Route>
         </Switch>
         <Footer />
