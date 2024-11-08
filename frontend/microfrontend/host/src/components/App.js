@@ -3,11 +3,7 @@ import { Route, useHistory, Switch } from "react-router-dom";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
-import PopupWithForm from "./PopupWithForm";
-import ImagePopup from "./ImagePopup";
-import api from "../utils/api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import AddPlacePopup from "./AddPlacePopup";
 import InfoTooltip from "./InfoTooltip";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -43,6 +39,22 @@ const EditAvatarPopup = lazy(() =>
   })
 );
 
+const AddPlacePopup = lazy(() =>
+  import("gallery/AddPlacePopup").catch(() => {
+    return {
+      default: () => <div className="error">Component is not available!</div>,
+    };
+  })
+);
+
+const ImagePopup = lazy(() =>
+  import("gallery/ImagePopup").catch(() => {
+    return {
+      default: () => <div className="error">Component is not available!</div>,
+    };
+  })
+);
+
 function App() {
   const [isInfoToolTipOpen, setIsInfoToolTipOpen] = React.useState(false);
   const [tooltipStatus, setTooltipStatus] = React.useState("");
@@ -52,9 +64,6 @@ function App() {
   const [email, setEmail] = React.useState("");
 
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-
-  const [selectedCard, setSelectedCard] = React.useState(null);
-  const [cards, setCards] = React.useState([]);
 
   // В корневом компоненте App создана стейт-переменная currentUser. Она используется в качестве значения для провайдера контекста.
   const [currentUser, setCurrentUser] = React.useState({});
@@ -99,7 +108,7 @@ function App() {
         detail: "",
       })
     );
-  }
+  };
 
   React.useEffect(() => {
     window.addEventListener("is-logged", handleIsLogged);
@@ -118,78 +127,18 @@ function App() {
 
   React.useEffect(() => {
     window.addEventListener("close-all-popups", handleCloseAllPopups);
-    return () => window.removeEventListener("close-all-popups", handleCloseAllPopups);
+    return () =>
+      window.removeEventListener("close-all-popups", handleCloseAllPopups);
   }, []);
-
 
   // old --------------
 
-  // Запрос к API за информацией о пользователе и массиве карточек выполняется единожды, при монтировании.
-  React.useEffect(() => {
-    api
-      .getAppInfo()
-      .then(([cardData, userData]) => {
-        setCurrentUser(userData);
-        setCards(cardData);
-      })
-      .catch((err) => console.log(err));
-  }, []);
-
-
-  function handleAddPlaceClick() {
-    setIsAddPlacePopupOpen(true);
-  }
-
-  function handleEditAvatarClick() {
-    setIsEditAvatarPopupOpen(true);
-  }
-
-  function closeAllPopups() {
-    // setIsEditProfilePopupOpen(false);
-    setIsAddPlacePopupOpen(false);
-    // setIsEditAvatarPopupOpen(false);
-    setIsInfoToolTipOpen(false);
-    setSelectedCard(null);
-
-    //!!! Добавить сюда сигнал на закрытие все всплывающих окон
-  }
-
-  function handleCardClick(card) {
-    setSelectedCard(card);
-  }
-
   
 
+  function closeAllPopups() {
+    setIsInfoToolTipOpen(false);
 
-  function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
-    api
-      .changeLikeCardStatus(card._id, !isLiked)
-      .then((newCard) => {
-        setCards((cards) =>
-          cards.map((c) => (c._id === card._id ? newCard : c))
-        );
-      })
-      .catch((err) => console.log(err));
-  }
-
-  function handleCardDelete(card) {
-    api
-      .removeCard(card._id)
-      .then(() => {
-        setCards((cards) => cards.filter((c) => c._id !== card._id));
-      })
-      .catch((err) => console.log(err));
-  }
-
-  function handleAddPlaceSubmit(newCard) {
-    api
-      .addCard(newCard)
-      .then((newCardFull) => {
-        setCards([newCardFull, ...cards]);
-        closeAllPopups();
-      })
-      .catch((err) => console.log(err));
+    //!!! Добавить сюда сигнал на закрытие все всплывающих окон
   }
 
   return (
@@ -202,12 +151,6 @@ function App() {
             exact
             path="/"
             component={Main}
-            cards={cards}
-            onAddPlace={handleAddPlaceClick}
-            onEditAvatar={handleEditAvatarClick}
-            onCardClick={handleCardClick}
-            onCardLike={handleCardLike}
-            onCardDelete={handleCardDelete}
             loggedIn={isLoggedIn}
           />
           <Route path="/signup">
@@ -223,24 +166,16 @@ function App() {
         </Switch>
         <Footer />
         <Suspense>
-          <EditProfilePopup
+          <EditProfilePopup />
+          <AddPlacePopup/>
+          <EditAvatarPopup />
+          <ImagePopup />
+          <InfoTooltip
+            isOpen={isInfoToolTipOpen}
+            onClose={closeAllPopups}
+            status={tooltipStatus}
           />
         </Suspense>
-        <AddPlacePopup
-          isOpen={isAddPlacePopupOpen}
-          onAddPlace={handleAddPlaceSubmit}
-          onClose={closeAllPopups}
-        />
-        <PopupWithForm title="Вы уверены?" name="remove-card" buttonText="Да" />
-        <Suspense>
-          <EditAvatarPopup/>
-        </Suspense>
-        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-        <InfoTooltip
-          isOpen={isInfoToolTipOpen}
-          onClose={closeAllPopups}
-          status={tooltipStatus}
-        />
       </div>
     </CurrentUserContext.Provider>
   );

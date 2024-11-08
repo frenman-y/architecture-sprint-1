@@ -8,14 +8,24 @@ function Profile() {
   const [imageStyle, setImageStyle] = React.useState({
     backgroundImage: null,
   });
+  const [id, setId] = React.useState("");
 
   const handleUserInfoUpdate = (event) => {
     setName(event.detail.name);
     setDescription(event.detail.description);
+    setId(event.detail.id);
   };
 
   const handleAvatarUpdate = (event) => {
     setImageStyle({ backgroundImage: `url(${event.detail})` });
+  };
+
+  const onAddPlace = (event) => {
+    window.dispatchEvent(
+      new CustomEvent("open-add-place-popup", {
+        detail: "",
+      })
+    );
   };
 
   React.useEffect(() => {
@@ -38,6 +48,7 @@ function Profile() {
             detail: {
               name: userData.name,
               description: userData.about,
+              id: userData._id,
             },
           })
         );
@@ -86,7 +97,7 @@ function Profile() {
       <button
         className="profile__add-button"
         type="button"
-        // onClick={onAddPlace}
+        onClick={onAddPlace}
       ></button>
     </section>
   );
