@@ -7,8 +7,6 @@ import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
 import api from "../utils/api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import EditProfilePopup from "./EditProfilePopup";
-import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import InfoTooltip from "./InfoTooltip";
 import ProtectedRoute from "./ProtectedRoute";
@@ -29,6 +27,22 @@ const Login = lazy(() =>
   })
 );
 
+const EditProfilePopup = lazy(() =>
+  import("user_profile/EditProfilePopup").catch(() => {
+    return {
+      default: () => <div className="error">Component is not available!</div>,
+    };
+  })
+);
+
+const EditAvatarPopup = lazy(() =>
+  import("user_profile/EditAvatarPopup").catch(() => {
+    return {
+      default: () => <div className="error">Component is not available!</div>,
+    };
+  })
+);
+
 function App() {
   const [isInfoToolTipOpen, setIsInfoToolTipOpen] = React.useState(false);
   const [tooltipStatus, setTooltipStatus] = React.useState("");
@@ -37,11 +51,7 @@ function App() {
   //В компоненты добавлены новые стейт-переменные: email — в компонент App
   const [email, setEmail] = React.useState("");
 
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
-    React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
-    React.useState(false);
 
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [cards, setCards] = React.useState([]);
@@ -50,15 +60,6 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState({});
 
   const history = useHistory();
-
-  const handleHistoryPush = (event) => {
-    history.push(event.detail);
-  };
-
-  const handleOpenToolTipWithStatus = (event) => {
-    setTooltipStatus(event.detail);
-    setIsInfoToolTipOpen(true);
-  };
 
   const handleIsLogged = (event) => {
     if (event.detail) {
@@ -88,28 +89,38 @@ function App() {
     history.push("/signin");
   };
 
-  React.useEffect(() => {
-    addEventListener("is-logged", handleIsLogged);
-    return () => removeEventListener("is-logged", handleIsLogged);
-  }, []);
+  const handleCloseAllPopups = (event) => {
+    console.log("handleCloseAllPopups");
+  };
 
-  React.useEffect(() => {
-    addEventListener("is-sign-in", handleIsSignIn);
-    return () => removeEventListener("is-sign-in", handleIsSignIn);
-  }, []);
-
-  React.useEffect(() => {
-    addEventListener("is-sign-out", handleIsSignOut);
-    return () => removeEventListener("is-sign-out", handleIsSignOut);
-  }, []);
-
-  function onSignOut() {
-    dispatchEvent(
+  const onSignOut = (event) => {
+    window.dispatchEvent(
       new CustomEvent("is-sign-out", {
         detail: "",
       })
     );
   }
+
+  React.useEffect(() => {
+    window.addEventListener("is-logged", handleIsLogged);
+    return () => window.removeEventListener("is-logged", handleIsLogged);
+  }, []);
+
+  React.useEffect(() => {
+    window.addEventListener("is-sign-in", handleIsSignIn);
+    return () => window.removeEventListener("is-sign-in", handleIsSignIn);
+  }, []);
+
+  React.useEffect(() => {
+    window.addEventListener("is-sign-out", handleIsSignOut);
+    return () => window.removeEventListener("is-sign-out", handleIsSignOut);
+  }, []);
+
+  React.useEffect(() => {
+    window.addEventListener("close-all-popups", handleCloseAllPopups);
+    return () => window.removeEventListener("close-all-popups", handleCloseAllPopups);
+  }, []);
+
 
   // old --------------
 
@@ -124,9 +135,6 @@ function App() {
       .catch((err) => console.log(err));
   }, []);
 
-  function handleEditProfileClick() {
-    setIsEditProfilePopupOpen(true);
-  }
 
   function handleAddPlaceClick() {
     setIsAddPlacePopupOpen(true);
@@ -137,36 +145,21 @@ function App() {
   }
 
   function closeAllPopups() {
-    setIsEditProfilePopupOpen(false);
+    // setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
-    setIsEditAvatarPopupOpen(false);
+    // setIsEditAvatarPopupOpen(false);
     setIsInfoToolTipOpen(false);
     setSelectedCard(null);
+
+    //!!! Добавить сюда сигнал на закрытие все всплывающих окон
   }
 
   function handleCardClick(card) {
     setSelectedCard(card);
   }
 
-  function handleUpdateUser(userUpdate) {
-    api
-      .setUserInfo(userUpdate)
-      .then((newUserData) => {
-        setCurrentUser(newUserData);
-        closeAllPopups();
-      })
-      .catch((err) => console.log(err));
-  }
+  
 
-  function handleUpdateAvatar(avatarUpdate) {
-    api
-      .setUserAvatar(avatarUpdate)
-      .then((newUserData) => {
-        setCurrentUser(newUserData);
-        closeAllPopups();
-      })
-      .catch((err) => console.log(err));
-  }
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
@@ -210,7 +203,6 @@ function App() {
             path="/"
             component={Main}
             cards={cards}
-            onEditProfile={handleEditProfileClick}
             onAddPlace={handleAddPlaceClick}
             onEditAvatar={handleEditAvatarClick}
             onCardClick={handleCardClick}
@@ -230,22 +222,19 @@ function App() {
           </Route>
         </Switch>
         <Footer />
-        <EditProfilePopup
-          isOpen={isEditProfilePopupOpen}
-          onUpdateUser={handleUpdateUser}
-          onClose={closeAllPopups}
-        />
+        <Suspense>
+          <EditProfilePopup
+          />
+        </Suspense>
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onAddPlace={handleAddPlaceSubmit}
           onClose={closeAllPopups}
         />
         <PopupWithForm title="Вы уверены?" name="remove-card" buttonText="Да" />
-        <EditAvatarPopup
-          isOpen={isEditAvatarPopupOpen}
-          onUpdateAvatar={handleUpdateAvatar}
-          onClose={closeAllPopups}
-        />
+        <Suspense>
+          <EditAvatarPopup/>
+        </Suspense>
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
         <InfoTooltip
           isOpen={isInfoToolTipOpen}
