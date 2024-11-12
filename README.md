@@ -11,23 +11,25 @@
 ### Планируемая структура проекта
 
 - `host` - Основное приложение
-  - `users` - Микрофронтенд с функционало для логина, регистрации и редактирования пользователей
+  - `src` - Исходный код проекта
+      - `components` - Компоненты основного приложения
+        - `Header` - Компонент верхней части приложения
+        - `Main` - Компонент для тела приложения
+        - `Footer` - Компонент нижней части
+        - `Popup` - Компонент всплывающего окна
+  - `users` - Микрофронтенд с функционалом для логина, регистрации и редактирования пользователей
     - `src` - Исходный код проекта
       - `components` - Компоненты
-        - ``
+        - `Login` - Компонент для авторизации
+        - `Registration` - Компонент для регистрации
+        - `Profile` - Компонент показа профиля
+        - `EditProfile` - Компонент редактирования профиля
   - `places` - Микрофронтенд с функционалом для добавления, удаления редактирования и лайков карточек
-- `src/` - Contains the main application code.
-  - `main.py` - Entry point of the application.
-  - `utils.py` - Helper functions for the application.
-  - `config/settings.yaml` - Configuration settings for the project.
-- `tests/` - Contains all test cases.
-  - `test_main.py` - Tests for `main.py`.
-  - `test_utils.py` - Tests for `utils.py`.
-- `docs/` - Documentation files.
-- `.gitignore` - Lists files ignored by Git.
-- `requirements.txt` - Dependencies required to run the project.
-- `README.md` - Project overview and instructions.
-
+    - `src` - Исходный код проекта
+      - `components` - Компоненты
+        - `Card` - Компонент карточки
+        - `AddCard` - Компонент для добавления карточки
+        - `Profile` - Компонент показа профиля
 ---
 
 
