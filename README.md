@@ -44,3 +44,6 @@
 
 # Реализация
 Не выполнена
+
+# ЗАДАНИЕ 2
+Ссылка на файл схемы - https://drive.google.com/file/d/1-CaS7ma8U2HA6Io_zu0WCN5xg6mP4ZHM/view?usp=sharing
