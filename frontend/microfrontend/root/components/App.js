@@ -1,20 +1,20 @@
 import React from "react";
 import { Route, useHistory, Switch } from "react-router-dom";
-import Header from "./Header";
-import Main from "./Main";
-import Footer from "./Footer";
-import PopupWithForm from "./PopupWithForm";
-import ImagePopup from "./ImagePopup";
-import api from "../utils/api";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import EditProfilePopup from "./EditProfilePopup";
-import EditAvatarPopup from "./EditAvatarPopup";
-import AddPlacePopup from "./AddPlacePopup";
-import Register from "./Register";
-import Login from "./Login";
-import InfoTooltip from "./InfoTooltip";
-import ProtectedRoute from "./ProtectedRoute";
-import * as auth from "../utils/auth.js";
+import Header from "./Header.js";
+import Main from "../../blog/components/Main.js";
+import Footer from "./Footer.js";
+import PopupWithForm from "./PopupWithForm.js";
+import ImagePopup from "../../blog/components/ImagePopup.js";
+import api from "../utils/api.js";
+import { CurrentUserContext } from "../context/CurrentUserContext.js";
+import EditProfilePopup from "../../../src/components/EditProfilePopup.js";
+import EditAvatarPopup from "../../../src/components/EditAvatarPopup.js";
+import AddPlacePopup from "../../../src/components/AddPlacePopup.js";
+import Register from "../../auth/components/Register.js";
+import Login from "../../auth/components/Login.js";
+import InfoTooltip from "../../auth/components/InfoTooltip.js";
+import ProtectedRoute from "./ProtectedRoute.js";
+import * as auth from "../../auth/utils/auth.js";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
