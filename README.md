@@ -58,7 +58,9 @@
 
   Запустить можно командами yarn start_host:live из папки frontend. Также запустить все три микрофронтенда из соответствующих папок командами  yarn start:live
 
-  
+  УРОВЕНЬ 3 НЕ СДЕЛАН!!!!!
 
 Задание 2
 https://app.diagrams.net/#G1c4svJdILC3jM_gKPOHBuBy-e1ZRd7f7y#%7B%22pageId%22%3A%22mwhRzsweAF-Pb1T0WD_E%22%7D
+
+Если ссылка не открыватеся то в корне лежит файл arch_template_task2_complete.drawio
