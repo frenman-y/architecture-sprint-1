@@ -1,0 +1,11 @@
+{
+  "name": "@mesto/gallery",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "webpack serve --env development",
+    "build": "webpack --env production"
+  }
+//  ...
+}
+  
