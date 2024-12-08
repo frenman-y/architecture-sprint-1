@@ -579,3 +579,4 @@ start();
 ## Ссылка на проект draw.io, где решал второе задание.
 ### Проект arch_template_task2.drawio сохранен на google диск и открыт общий доступ по ссылке для редактирования:
 #### [arch_template_task2.drawio](https://drive.google.com/file/d/1xR1y21Y2rwqGW3H9U9HFXt_S0OEKCMua/view?usp=sharing)
+#### P.S. страница в проекте draw.io называется `DF - 2`
