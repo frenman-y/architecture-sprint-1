@@ -1,3 +1,6 @@
+
+1 Задание
+---
 1.	Проектирование:
    
 	Выбран Single SPA для организации микрофронтендов. 
@@ -207,3 +210,8 @@ npm install
 2. Запустите корневую конфигурацию (`root-config`) на порту 9000.
 3. Последовательно запустите `profile-microfrontend` (порт 9001), `gallery-microfrontend` (порт 9002) и `likes-microfrontend` (порт 9003).
 4. Проверьте приложение через браузер, убедитесь, что все маршруты работают корректно.
+
+---
+2 Задание
+---
+https://app.diagrams.net/#G1G0OFPcJsZTV9XUjdIAaTOJCDqdUA89s3#%7B%22pageId%22%3A%22qgNA9GUGCHz_yHZ5M3iQ%22%7D
